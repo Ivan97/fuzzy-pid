@@ -6,6 +6,9 @@ import (
 )
 
 const N = 7
+const Trimf = "trimf"
+const Gaussmf = "gaussmf"
+const Trapmf = "trapmf"
 
 type FuzzyPid struct {
 	target float64 //控制目标
@@ -96,61 +99,6 @@ func NewFuzzyPid(eMax float64, deMax float64, kpMax float64, kiMax float64, kdMa
 	return pid
 }
 
-func NewFuzzyPid_(fuzzyLimit []float64, pidInitVal []float64) *FuzzyPid {
-
-	eMax := fuzzyLimit[0]
-	deMax := fuzzyLimit[1]
-	deltaKpMax := fuzzyLimit[2]
-	deltaKiMax := fuzzyLimit[3]
-	deltaKdMax := fuzzyLimit[4]
-
-	Kp := pidInitVal[0]
-	Ki := pidInitVal[1]
-	Kd := pidInitVal[2]
-
-	pid := &FuzzyPid{
-		target: 0,
-		actual: 0,
-
-		eMax:       eMax,
-		deMax:      deMax,
-		deltaKpMax: deltaKpMax,
-		deltaKiMax: deltaKiMax,
-		deltaKdMax: deltaKdMax,
-
-		eMfParas:  nil,
-		deMfParas: nil,
-		kpMfParas: nil,
-		kiMfParas: nil,
-		kdMfParas: nil,
-
-		e:     0,
-		ePre1: 0,
-		ePre2: 0,
-		de:    0,
-		Ke:    (N / 2) / fuzzyLimit[0],
-		Kde:   (N / 2) / fuzzyLimit[1],
-		KuP:   deltaKpMax / (N / 2),
-		KuI:   deltaKiMax / (N / 2),
-		KuD:   deltaKdMax / (N / 2),
-
-		mfTE:  "No Type",
-		mfTDe: "No Type",
-		mfTKp: "No Type",
-		mfTKi: "No Type",
-		mfTKd: "No Type",
-
-		Kp: Kp,
-		Ki: Ki,
-		Kd: Kd,
-
-		A: Kp + Ki + Kd,
-		B: -2*Kd - Kp,
-		C: Kd,
-	}
-	return pid
-}
-
 func (pid *FuzzyPid) GetKp() float64 {
 	return pid.Kp
 }
@@ -213,16 +161,16 @@ func (pid *FuzzyPid) SetMFSub(_type string, paras []float64, n int) {
 
 	switch n {
 	case 0:
-		if _type == "trimf" || _type == "gaussmf" || _type == "trapmf" {
+		if _type == Trimf || _type == Gaussmf || _type == Trapmf {
 			pid.mfTE = _type
 		} else {
 			fmt.Println("Error: Type Error")
 		}
-		if pid.mfTE == "trimf" {
+		if pid.mfTE == Trimf {
 			NMfE = 3
-		} else if pid.mfTE == "gaussmf" {
+		} else if pid.mfTE == Gaussmf {
 			NMfE = 2
-		} else if pid.mfTE == "trapmf" {
+		} else if pid.mfTE == Trapmf {
 			NMfE = 4
 		}
 
@@ -231,35 +179,35 @@ func (pid *FuzzyPid) SetMFSub(_type string, paras []float64, n int) {
 
 		break
 	case 1:
-		if _type == "trimf" || _type == "gaussmf" || _type == "trapmf" {
+		if _type == Trimf || _type == Gaussmf || _type == Trapmf {
 			pid.mfTDe = _type
 		} else {
 			fmt.Println("Error: Type Error")
 		}
-		if pid.mfTDe == "trimf" {
+		if pid.mfTDe == Trimf {
 			NMfDe = 3
-		} else if pid.mfTDe == "gaussmf" {
+		} else if pid.mfTDe == Gaussmf {
 			NMfDe = 2
-		} else if pid.mfTDe == "trapmf" {
+		} else if pid.mfTDe == Trapmf {
 			NMfDe = 4
 		}
 		pid.deMfParas = make([]float64, N*NMfDe)
 		pid.deMfParas = paras
 		break
 	case 2:
-		if _type == "trimf" || _type == "gaussmf" || _type == "trapmf" {
+		if _type == Trimf || _type == Gaussmf || _type == Trapmf {
 			pid.mfTKp = _type
 		} else {
 			fmt.Println("Error: Type Error")
 		}
 		switch pid.mfTKp {
-		case "trimf":
+		case Trimf:
 			NMfKp = 3
 			break
-		case "gaussmf":
+		case Gaussmf:
 			NMfKp = 2
 			break
-		case "trapmf":
+		case Trapmf:
 			NMfKp = 4
 			break
 		}
@@ -267,19 +215,19 @@ func (pid *FuzzyPid) SetMFSub(_type string, paras []float64, n int) {
 		pid.kpMfParas = paras
 		break
 	case 3:
-		if _type == "trimf" || _type == "gaussmf" || _type == "trapmf" {
+		if _type == Trimf || _type == Gaussmf || _type == Trapmf {
 			pid.mfTKi = _type
 		} else {
 			fmt.Println("Error: Type Error")
 		}
 		switch pid.mfTKi {
-		case "trimf":
+		case Trimf:
 			NMfKi = 3
 			break
-		case "gaussmf":
+		case Gaussmf:
 			NMfKi = 2
 			break
-		case "trapmf":
+		case Trapmf:
 			NMfKi = 4
 			break
 		}
@@ -287,19 +235,19 @@ func (pid *FuzzyPid) SetMFSub(_type string, paras []float64, n int) {
 		pid.kiMfParas = paras
 		break
 	case 4:
-		if _type == "trimf" || _type == "gaussmf" || _type == "trapmf" {
+		if _type == Trimf || _type == Gaussmf || _type == Trapmf {
 			pid.mfTKd = _type
 		} else {
 			fmt.Println("Error: Type Error")
 		}
 		switch pid.mfTKd {
-		case "trimf":
+		case Trimf:
 			NMfKd = 3
 			break
-		case "gaussmf":
+		case Gaussmf:
 			NMfKd = 2
 			break
-		case "trapmf":
+		case Trapmf:
 			NMfKd = 4
 			break
 		}
@@ -347,7 +295,7 @@ func (pid *FuzzyPid) Realize(t float64, a float64) float64 {
 	//将误差e模糊化
 	j := 0
 	for i := 0; i < N; i++ {
-		if pid.mfTE == "trimf" {
+		if pid.mfTE == Trimf {
 			uE[i] = pid.TrimF(pid.e, pid.eMfParas[i*3], pid.eMfParas[i*3+1], pid.eMfParas[i*3+2])
 		}
 		if uE[i] != 0 {
@@ -363,7 +311,7 @@ func (pid *FuzzyPid) Realize(t float64, a float64) float64 {
 	//将误差变化率de模糊化
 	j = 0
 	for i := 0; i < N; i++ {
-		if pid.mfTDe == "trimf" {
+		if pid.mfTDe == Trimf {
 			uDe[i] = pid.TrimF(pid.de, pid.deMfParas[i*3], pid.deMfParas[i*3+1], pid.deMfParas[i*3+2])
 		}
 		if uDe[i] != 0 {

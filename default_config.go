@@ -48,11 +48,11 @@ var KdMfParas = []float64{-3, -3, -2, -3, -2, -1, -2, -1, 0, -1, 0, 1, 0, 1, 2, 
 
 func (pid *FuzzyPid) SetDefaultMf() *FuzzyPid {
 	pid.SetMF(
-		"trimf", eMfParas,
-		"trimf", deMfParas,
-		"trimf", KpMfParas,
-		"trimf", KiMfParas,
-		"trimf", KdMfParas,
+		Trimf, eMfParas,
+		Trimf, deMfParas,
+		Trimf, KpMfParas,
+		Trimf, KiMfParas,
+		Trimf, KdMfParas,
 	)
 	return pid
 }

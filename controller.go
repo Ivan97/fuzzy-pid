@@ -166,12 +166,17 @@ func (pid *FuzzyPid) SetMFSub(_type string, paras []float64, n int) {
 		} else {
 			fmt.Println("Error: Type Error")
 		}
-		if pid.mfTE == Trimf {
+
+		switch pid.mfTE {
+		case Trimf:
 			NMfE = 3
-		} else if pid.mfTE == Gaussmf {
+			break
+		case Gaussmf:
 			NMfE = 2
-		} else if pid.mfTE == Trapmf {
+			break
+		case Trapmf:
 			NMfE = 4
+			break
 		}
 
 		pid.eMfParas = make([]float64, N*NMfE)
@@ -184,12 +189,16 @@ func (pid *FuzzyPid) SetMFSub(_type string, paras []float64, n int) {
 		} else {
 			fmt.Println("Error: Type Error")
 		}
-		if pid.mfTDe == Trimf {
+		switch pid.mfTDe {
+		case Trimf:
 			NMfDe = 3
-		} else if pid.mfTDe == Gaussmf {
+			break
+		case Gaussmf:
 			NMfDe = 2
-		} else if pid.mfTDe == Trapmf {
+			break
+		case Trapmf:
 			NMfDe = 4
+			break
 		}
 		pid.deMfParas = make([]float64, N*NMfDe)
 		pid.deMfParas = paras
